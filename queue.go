@@ -1,4 +1,4 @@
-package amqp_queue_wrapper
+package dvdblk
 
 import (
 	"fmt"
