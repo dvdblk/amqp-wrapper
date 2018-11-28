@@ -35,7 +35,7 @@ func (queue *Queue) ConnectAndKeepAlive() {
 	for {
 		var reconnectDelay = initialReconnectDelay
 		for !queue.Connect() {
-			queue.l.Println("Failed to connect. Retrying in %d seconds...", reconnectDelay)
+			queue.l.Printf("Failed to connect. Retrying in %d seconds...", reconnectDelay)
 			time.Sleep(reconnectDelay)
 			// exponential backoff
 			reconnectDelay = reconnectDelay * 2
@@ -48,7 +48,7 @@ func (queue *Queue) ConnectAndKeepAlive() {
 }
 
 func (queue *Queue) Connect() bool {
-	queue.l.Println("Attempting to connect to %s!", queue.url)
+	queue.l.Printf("Attempting to connect to %s!", queue.url)
 	c, err := amqp.Dial(queue.url)
 	if err != nil {
 		return false
@@ -73,7 +73,7 @@ func (queue *Queue) Connect() bool {
 	queue.channel = ch
 	queue.onConnectionClosed = make(chan *amqp.Error)
 	queue.channel.NotifyClose(queue.onConnectionClosed)
-	queue.l.Println("Connected to %s!", queue.url)
+	queue.l.Printf("Connected to %s!", queue.url)
 	return true
 }
 
