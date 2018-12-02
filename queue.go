@@ -32,7 +32,7 @@ func New(name string, url string) *Queue {
 	return &queue
 }
 
-func (queue *Queue) ConnectAndKeepAlive(onConnect onConnectionAliveHandler) {
+func (queue *Queue) ConnectAndKeepAlive(onConnect *onConnectionAliveHandler) {
 	for {
 		var reconnectDelay = initialReconnectDelay
 		for !queue.Connect() {
@@ -44,7 +44,9 @@ func (queue *Queue) ConnectAndKeepAlive(onConnect onConnectionAliveHandler) {
 				reconnectDelay = maxReconnectDelay
 			}
 		}
-		onConnect()
+		if onConnect != nil {
+			(*onConnect)()
+		}
 		<-queue.onConnectionClosed
 	}
 }
