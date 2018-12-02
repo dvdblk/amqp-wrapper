@@ -12,6 +12,7 @@ const initialReconnectDelay time.Duration = 1
 const maxReconnectDelay time.Duration = 16
 
 type messageHandler func(delivery amqp.Delivery)
+type onConnectionAliveHandler func()
 
 type Queue struct {
 	name string
@@ -31,7 +32,7 @@ func New(name string, url string) *Queue {
 	return &queue
 }
 
-func (queue *Queue) ConnectAndKeepAlive() {
+func (queue *Queue) ConnectAndKeepAlive(onConnect onConnectionAliveHandler) {
 	for {
 		var reconnectDelay = initialReconnectDelay
 		for !queue.Connect() {
@@ -43,6 +44,7 @@ func (queue *Queue) ConnectAndKeepAlive() {
 				reconnectDelay = maxReconnectDelay
 			}
 		}
+		onConnect()
 		<-queue.onConnectionClosed
 	}
 }
