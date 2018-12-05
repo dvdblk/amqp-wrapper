@@ -37,7 +37,7 @@ func (queue *Queue) ConnectAndKeepAlive(onConnect onConnectionAliveHandler) {
 		var reconnectDelay = initialReconnectDelay
 		for !queue.Connect() {
 			queue.l.Printf("Failed to connect. Retrying in %d seconds...", reconnectDelay)
-			time.Sleep(reconnectDelay)
+			time.Sleep(reconnectDelay * time.Second)
 			// exponential backoff
 			reconnectDelay = reconnectDelay * 2
 			if reconnectDelay > maxReconnectDelay {
